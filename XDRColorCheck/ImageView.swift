@@ -37,6 +37,85 @@ func loadCIImageWithCGSource(imageData: Data) -> CIImage? {
     return CIImage(cgImageSource: src, index: 0, options: imageOptions)
 }
 
+func loadCIImageWithGainMap(imageData: Data) -> (image: CIImage?, hasGainMap: Bool) {
+    guard let src = CGImageSourceCreateWithData(imageData as CFData, [
+        kCGImageSourceShouldAllowFloat: true,
+    ] as CFDictionary) else { return (nil, false) }
+    
+    let primaryIndex = CGImageSourceGetPrimaryImageIndex(src)
+    
+    var gainMap: CIImage? = nil
+    
+    var orientation = CGImagePropertyOrientation.up
+    if let props = CGImageSourceCopyPropertiesAtIndex(src, primaryIndex, [:] as CFDictionary) as? [CFString : Any] {
+        if let exifOrientation = props[kCGImagePropertyOrientation] as? CGImagePropertyOrientation {
+            orientation = exifOrientation
+        }
+    }
+    
+    var outputImage = CIImage(cgImageSource: src, index: 0, options: imageOptions)
+    
+    // Gain map API is new
+    if #available(iOS 14.1, *) {
+        if let gainMapInfo = CGImageSourceCopyAuxiliaryDataInfoAtIndex(src, primaryIndex, kCGImageAuxiliaryDataTypeHDRGainMap) as? [CFString : Any] {
+            
+            if let gainDesc = gainMapInfo[kCGImageAuxiliaryDataInfoDataDescription] as? [CFString : Any],
+               let bytesPerRow = gainDesc[kCGImagePropertyBytesPerRow] as? Int,
+               let width = gainDesc[kCGImagePropertyWidth] as? Int,
+               let height = gainDesc[kCGImagePropertyHeight] as? Int,
+               let pixFmt = gainDesc[kCGImagePropertyPixelFormat] as? OSType
+               {
+                let sizeCG = CGSize(width: CGFloat(width), height: CGFloat(height))
+
+                if pixFmt == kCVPixelFormatType_OneComponent8 {
+                    let colorSpace: CGColorSpace? = nil
+                    if let gainMapData = gainMapInfo[kCGImageAuxiliaryDataInfoData] as? Data {
+                        gainMap = CIImage(bitmapData: gainMapData,
+                                            bytesPerRow: bytesPerRow,
+                                            size: sizeCG,
+                                            format: .L8,
+                                            colorSpace: colorSpace)
+                        gainMap = gainMap?.oriented(orientation)
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    if let gainMap = gainMap {
+        let mulFilter = CIFilter.multiplyBlendMode()
+        mulFilter.inputImage = gainMap
+        mulFilter.backgroundImage = outputImage
+        if let combinedImage = mulFilter.outputImage {
+            outputImage = combinedImage
+        }
+        
+    } else {
+        if let props = CGImageSourceCopyPropertiesAtIndex(src, primaryIndex, [:] as CFDictionary) as? [String : Any] {
+            if let gainVal = props[(kCGImagePropertyExifGainControl as String)] {
+                print("Found gain: \(gainVal)")
+            }
+        }
+    }
+    
+    
+    
+    // like what the fuck
+    // Find a way to use kCGImageDestinationPreserveGainMap??
+    
+    return (outputImage, gainMap != nil)
+}
+
+extension CIImage {
+    func adjustExposure(ev: Float) -> CIImage? {
+        let brightFilter = CIFilter.exposureAdjust()
+        brightFilter.ev = ev
+        brightFilter.inputImage = self
+        return brightFilter.outputImage
+    }
+}
+
 func aspectFitToDestination(image: CIImage, destination: CGSize) -> CIImage {
     let scale: CGFloat = min(destination.width / image.extent.width, destination.height / image.extent.height)
     let t = CGAffineTransform(scaleX: scale, y: scale)
@@ -214,13 +293,7 @@ struct MetalImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstructa
 
             image = aspectFitToDestination(image: image, destination: view.drawableSize)
             
-            let brightFilter = CIFilter.exposureAdjust()
-            brightFilter.ev = 1.0
-            
-            brightFilter.inputImage = image
-            if let brighterImage = brightFilter.outputImage {
-                image = brighterImage
-            }
+//            image = image.adjustExposure(ev: 2.0)!
             
             context.render(image, to: texture, commandBuffer: nil, bounds: image.extent, colorSpace: colorSpace)
             
@@ -244,7 +317,8 @@ struct MetalImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstructa
     
     func updateUIView(_ view: UIView, context: Context) {
         let iv = view.subviews[0] as! MTKView
-        context.coordinator.image = loadCIImageWithCGSource(imageData: imageData)
+        let (image, usedGain) = loadCIImageWithGainMap(imageData: imageData)
+        context.coordinator.image = image
         iv.setNeedsDisplay()
     }
 
