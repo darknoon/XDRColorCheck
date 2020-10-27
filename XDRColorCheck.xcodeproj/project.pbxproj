@@ -7,16 +7,35 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		490BA5F02547BEEC00983484 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 490BA5EF2547BEEC00983484 /* ImageView.swift */; };
+		490BA5F12547BEEC00983484 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 490BA5EF2547BEEC00983484 /* ImageView.swift */; };
+		490BA5F72547BEFE00983484 /* ImageList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 490BA5F62547BEFE00983484 /* ImageList.swift */; };
+		490BA5F82547BEFE00983484 /* ImageList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 490BA5F62547BEFE00983484 /* ImageList.swift */; };
+		490BA6062547BFF000983484 /* IMG_1201.HEIC in Resources */ = {isa = PBXBuildFile; fileRef = 490BA6052547BFF000983484 /* IMG_1201.HEIC */; };
+		490BA6072547BFF000983484 /* IMG_1201.HEIC in Resources */ = {isa = PBXBuildFile; fileRef = 490BA6052547BFF000983484 /* IMG_1201.HEIC */; };
+		490BA60A2548780400983484 /* XDRColorCheckApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B5C35C2545375000DBE7EC /* XDRColorCheckApp.swift */; };
+		490BA60F2548781100983484 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49B5C3602545375200DBE7EC /* Assets.xcassets */; };
+		490BA6142548782A00983484 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49B5C3632545375200DBE7EC /* Preview Assets.xcassets */; };
+		49B0AAB82547B8D900D2C5C8 /* ColorList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B5C35E2545375000DBE7EC /* ColorList.swift */; };
+		49B0AABC2547B8F300D2C5C8 /* ColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B0AABB2547B8F300D2C5C8 /* ColorView.swift */; };
+		49B0AABD2547B8F300D2C5C8 /* ColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B0AABB2547B8F300D2C5C8 /* ColorView.swift */; };
 		49B5C35D2545375000DBE7EC /* XDRColorCheckApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B5C35C2545375000DBE7EC /* XDRColorCheckApp.swift */; };
-		49B5C35F2545375000DBE7EC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B5C35E2545375000DBE7EC /* ContentView.swift */; };
+		49B5C35F2545375000DBE7EC /* ColorList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B5C35E2545375000DBE7EC /* ColorList.swift */; };
 		49B5C3612545375200DBE7EC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49B5C3602545375200DBE7EC /* Assets.xcassets */; };
 		49B5C3642545375200DBE7EC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49B5C3632545375200DBE7EC /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		490BA5EF2547BEEC00983484 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
+		490BA5F62547BEFE00983484 /* ImageList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageList.swift; sourceTree = "<group>"; };
+		490BA6052547BFF000983484 /* IMG_1201.HEIC */ = {isa = PBXFileReference; lastKnownFileType = file; path = IMG_1201.HEIC; sourceTree = "<group>"; };
+		49B0AAA42547B8BD00D2C5C8 /* XDR Color Check.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "XDR Color Check.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		49B0AAAF2547B8BD00D2C5C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		49B0AAB02547B8BD00D2C5C8 /* XDRColorCheck_Mac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XDRColorCheck_Mac.entitlements; sourceTree = "<group>"; };
+		49B0AABB2547B8F300D2C5C8 /* ColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorView.swift; sourceTree = "<group>"; };
 		49B5C3592545375000DBE7EC /* XDRColorCheck.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XDRColorCheck.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49B5C35C2545375000DBE7EC /* XDRColorCheckApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XDRColorCheckApp.swift; sourceTree = "<group>"; };
-		49B5C35E2545375000DBE7EC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		49B5C35E2545375000DBE7EC /* ColorList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorList.swift; sourceTree = "<group>"; };
 		49B5C3602545375200DBE7EC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		49B5C3632545375200DBE7EC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		49B5C3652545375200DBE7EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -24,6 +43,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		49B0AAA12547B8BD00D2C5C8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		49B5C3562545375000DBE7EC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -34,10 +60,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		49B0AAA52547B8BD00D2C5C8 /* XDRColorCheck-Mac */ = {
+			isa = PBXGroup;
+			children = (
+				49B0AAAF2547B8BD00D2C5C8 /* Info.plist */,
+				49B0AAB02547B8BD00D2C5C8 /* XDRColorCheck_Mac.entitlements */,
+			);
+			path = "XDRColorCheck-Mac";
+			sourceTree = "<group>";
+		};
 		49B5C3502545375000DBE7EC = {
 			isa = PBXGroup;
 			children = (
 				49B5C35B2545375000DBE7EC /* XDRColorCheck */,
+				49B0AAA52547B8BD00D2C5C8 /* XDRColorCheck-Mac */,
 				49B5C35A2545375000DBE7EC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,6 +82,7 @@
 			isa = PBXGroup;
 			children = (
 				49B5C3592545375000DBE7EC /* XDRColorCheck.app */,
+				49B0AAA42547B8BD00D2C5C8 /* XDR Color Check.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -55,7 +92,11 @@
 			children = (
 				49B5C36C2545376900DBE7EC /* XDRColorCheck.entitlements */,
 				49B5C35C2545375000DBE7EC /* XDRColorCheckApp.swift */,
-				49B5C35E2545375000DBE7EC /* ContentView.swift */,
+				49B5C35E2545375000DBE7EC /* ColorList.swift */,
+				49B0AABB2547B8F300D2C5C8 /* ColorView.swift */,
+				490BA5F62547BEFE00983484 /* ImageList.swift */,
+				490BA5EF2547BEEC00983484 /* ImageView.swift */,
+				490BA6052547BFF000983484 /* IMG_1201.HEIC */,
 				49B5C3602545375200DBE7EC /* Assets.xcassets */,
 				49B5C3652545375200DBE7EC /* Info.plist */,
 				49B5C3622545375200DBE7EC /* Preview Content */,
@@ -74,6 +115,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		49B0AAA32547B8BD00D2C5C8 /* XDRColorCheck-Mac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 49B0AAB12547B8BD00D2C5C8 /* Build configuration list for PBXNativeTarget "XDRColorCheck-Mac" */;
+			buildPhases = (
+				49B0AAA02547B8BD00D2C5C8 /* Sources */,
+				49B0AAA12547B8BD00D2C5C8 /* Frameworks */,
+				49B0AAA22547B8BD00D2C5C8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "XDRColorCheck-Mac";
+			productName = "XDRColorCheck-Mac";
+			productReference = 49B0AAA42547B8BD00D2C5C8 /* XDR Color Check.app */;
+			productType = "com.apple.product-type.application";
+		};
 		49B5C3582545375000DBE7EC /* XDRColorCheck */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 49B5C3682545375200DBE7EC /* Build configuration list for PBXNativeTarget "XDRColorCheck" */;
@@ -100,6 +158,9 @@
 				LastSwiftUpdateCheck = 1220;
 				LastUpgradeCheck = 1220;
 				TargetAttributes = {
+					49B0AAA32547B8BD00D2C5C8 = {
+						CreatedOnToolsVersion = 12.2;
+					};
 					49B5C3582545375000DBE7EC = {
 						CreatedOnToolsVersion = 12.2;
 					};
@@ -119,16 +180,28 @@
 			projectRoot = "";
 			targets = (
 				49B5C3582545375000DBE7EC /* XDRColorCheck */,
+				49B0AAA32547B8BD00D2C5C8 /* XDRColorCheck-Mac */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		49B0AAA22547B8BD00D2C5C8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				490BA6142548782A00983484 /* Preview Assets.xcassets in Resources */,
+				490BA6072547BFF000983484 /* IMG_1201.HEIC in Resources */,
+				490BA60F2548781100983484 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		49B5C3572545375000DBE7EC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				49B5C3642545375200DBE7EC /* Preview Assets.xcassets in Resources */,
+				490BA6062547BFF000983484 /* IMG_1201.HEIC in Resources */,
 				49B5C3612545375200DBE7EC /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -136,18 +209,83 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		49B0AAA02547B8BD00D2C5C8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				490BA5F12547BEEC00983484 /* ImageView.swift in Sources */,
+				490BA60A2548780400983484 /* XDRColorCheckApp.swift in Sources */,
+				49B0AABD2547B8F300D2C5C8 /* ColorView.swift in Sources */,
+				49B0AAB82547B8D900D2C5C8 /* ColorList.swift in Sources */,
+				490BA5F82547BEFE00983484 /* ImageList.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		49B5C3552545375000DBE7EC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49B5C35F2545375000DBE7EC /* ContentView.swift in Sources */,
+				490BA5F02547BEEC00983484 /* ImageView.swift in Sources */,
+				49B0AABC2547B8F300D2C5C8 /* ColorView.swift in Sources */,
+				49B5C35F2545375000DBE7EC /* ColorList.swift in Sources */,
 				49B5C35D2545375000DBE7EC /* XDRColorCheckApp.swift in Sources */,
+				490BA5F72547BEFE00983484 /* ImageList.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		49B0AAB22547B8BD00D2C5C8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "XDRColorCheck-Mac/XDRColorCheck_Mac.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"XDRColorCheck/Preview Content\"";
+				DEVELOPMENT_TEAM = DDE4G723AJ;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "XDRColorCheck-Mac/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.darknoon.XDRColorCheck-Mac";
+				PRODUCT_NAME = "XDR Color Check";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		49B0AAB32547B8BD00D2C5C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "XDRColorCheck-Mac/XDRColorCheck_Mac.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"XDRColorCheck/Preview Content\"";
+				DEVELOPMENT_TEAM = DDE4G723AJ;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "XDRColorCheck-Mac/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.darknoon.XDRColorCheck-Mac";
+				PRODUCT_NAME = "XDR Color Check";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		49B5C3662545375200DBE7EC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -282,10 +420,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.darknoon.XDRColorCheck;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,6";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -307,16 +445,25 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.darknoon.XDRColorCheck;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,6";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		49B0AAB12547B8BD00D2C5C8 /* Build configuration list for PBXNativeTarget "XDRColorCheck-Mac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				49B0AAB22547B8BD00D2C5C8 /* Debug */,
+				49B0AAB32547B8BD00D2C5C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		49B5C3542545375000DBE7EC /* Build configuration list for PBXProject "XDRColorCheck" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

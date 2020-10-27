@@ -11,7 +11,18 @@ import SwiftUI
 struct XDRColorCheckApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TabView {
+                ColorList()
+                    .tabItem {
+                        Image(systemName: "paintpalette")
+                        Text("Colors")
+                    }
+                ImageList()
+                    .tabItem {
+                        Image(systemName: "photo.on.rectangle")
+                        Text("Images")
+                    }
+            }
         }
     }
 }
