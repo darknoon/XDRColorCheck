@@ -8,26 +8,42 @@
 import SwiftUI
 import Foundation
 import CoreImage
+import CoreImage.CIFilterBuiltins
 import MetalKit
 
 let bgColor = makeGrey(spaceName: CGColorSpace.extendedLinearDisplayP3, value: 1.0)
+
+
+var imageOptions: [CIImageOption : Any] {
+    get {
+        var options: [CIImageOption : Any] = [:]
+        options[.applyOrientationProperty] = true
+        if #available(iOS 14.1, *) {
+            // This seems to do nothing :(
+            options[.toneMapHDRtoSDR] = false
+        }
+        return options
+    }
+}
+
+func loadCIImage(imageData: Data) -> CIImage? {
+    return CIImage(data: imageData, options: imageOptions)
+}
 
 func loadCIImageWithCGSource(imageData: Data) -> CIImage? {
     guard let src = CGImageSourceCreateWithData(imageData as CFData, [
         kCGImageSourceShouldAllowFloat: true,
     ] as CFDictionary) else { return nil }
-    
-    var options: [CIImageOption : Any] = [:]
-    options[.applyOrientationProperty] = true
-    if #available(iOS 14.1, *) {
-        options[.toneMapHDRtoSDR] = false
-    }
-    return CIImage(cgImageSource: src, index: 0, options: options)
+    return CIImage(cgImageSource: src, index: 0, options: imageOptions)
 }
 
+func aspectFitToDestination(image: CIImage, destination: CGSize) -> CIImage {
+    let scale: CGFloat = min(destination.width / image.extent.width, destination.height / image.extent.height)
+    let t = CGAffineTransform(scaleX: scale, y: scale)
+    return image.transformed(by: t)
+}
 
-
-struct PlatformImageView : UIViewRepresentable {
+struct PlatformImageView : UIViewRepresentable, ImageDataConstructable {
     
     let imageData: Data
     
@@ -48,7 +64,7 @@ struct PlatformImageView : UIViewRepresentable {
 }
 
 
-struct PlatformImageViewCI : UIViewRepresentable {
+struct PlatformImageViewCI : UIViewRepresentable, ImageDataConstructable {
     let imageData: Data
     
     func makeUIView(context: Context) -> UIView {
@@ -77,7 +93,7 @@ struct PlatformImageViewCI : UIViewRepresentable {
 }
 
 
-struct PlatformImageViewCIRenderCG : UIViewRepresentable {
+struct PlatformImageViewCIRenderCG : UIViewRepresentable, ImageDataConstructable {
     let imageData: Data
     
     func makeUIView(context: Context) -> UIView {
@@ -113,7 +129,7 @@ struct PlatformImageViewCIRenderCG : UIViewRepresentable {
 }
 
 
-struct PlatformImageViewCIRenderCGSource : UIViewRepresentable {
+struct PlatformImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstructable {
     let imageData: Data
     
     func makeUIView(context: Context) -> UIView {
@@ -146,7 +162,7 @@ struct PlatformImageViewCIRenderCGSource : UIViewRepresentable {
 }
 
 
-struct MetalImageViewCIRenderCGSource : UIViewRepresentable {
+struct MetalImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstructable {
     let imageData: Data
     
     class Renderer : NSObject, MTKViewDelegate {
@@ -172,9 +188,13 @@ struct MetalImageViewCIRenderCGSource : UIViewRepresentable {
             // allow CI to write to fb
             view.framebufferOnly = false
             view.colorPixelFormat = .rgba16Float
-            view.clearColor = MTLClearColor(red: 2.0, green: 2.0, blue: 2.0, alpha: 1.0)
+            view.clearColor = MTLClearColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
             view.delegate = self
             layer.colorspace = CGColorSpace(name: CGColorSpace.extendedLinearDisplayP3)
+            
+            // Not doing anything
+            // layer.setValue(true, forKey: "wantsExtendedDynamicRangeContent")
+            // layer.wantsExtendedDynamicRangeContent = true
         }
         
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -183,7 +203,6 @@ struct MetalImageViewCIRenderCGSource : UIViewRepresentable {
         
         func draw(in view: MTKView) {
             guard let context = context,
-                  let commandQueue = commandQueue,
                   var image = image,
                   let layer = view.layer as? CAMetalLayer,
                   let drawable = view.currentDrawable,
@@ -193,9 +212,15 @@ struct MetalImageViewCIRenderCGSource : UIViewRepresentable {
             }
             let texture = drawable.texture
 
-            let ds = view.drawableSize
-            let t = CGAffineTransform(scaleX: ds.width / image.extent.width, y: ds.height / image.extent.width)
-            image = image.transformed(by: t)
+            image = aspectFitToDestination(image: image, destination: view.drawableSize)
+            
+            let brightFilter = CIFilter.exposureAdjust()
+            brightFilter.ev = 1.0
+            
+            brightFilter.inputImage = image
+            if let brighterImage = brightFilter.outputImage {
+                image = brighterImage
+            }
             
             context.render(image, to: texture, commandBuffer: nil, bounds: image.extent, colorSpace: colorSpace)
             
