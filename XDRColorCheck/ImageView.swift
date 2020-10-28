@@ -13,7 +13,6 @@ import MetalKit
 
 let bgColor = makeGrey(spaceName: CGColorSpace.extendedLinearDisplayP3, value: 1.0)
 
-
 var imageOptions: [CIImageOption : Any] {
     get {
         var options: [CIImageOption : Any] = [:]
@@ -46,10 +45,18 @@ func loadCIImageWithGainMap(imageData: Data) -> (image: CIImage?, hasGainMap: Bo
     
     var gainMap: CIImage? = nil
     
+    var gainValue: CGFloat?
+    
     var orientation = CGImagePropertyOrientation.up
     if let props = CGImageSourceCopyPropertiesAtIndex(src, primaryIndex, [:] as CFDictionary) as? [CFString : Any] {
-        if let exifOrientation = props[kCGImagePropertyOrientation] as? CGImagePropertyOrientation {
-            orientation = exifOrientation
+        if let exifOrientation = props[kCGImagePropertyOrientation] as? UInt32, let cgOrientation = CGImagePropertyOrientation(rawValue: exifOrientation) {
+            orientation = cgOrientation
+        }
+        
+        if let exif = props[kCGImagePropertyExifDictionary] as? [CFString : Any] {
+            if let brightnessValue = exif[kCGImagePropertyExifBrightnessValue] as? CGFloat {
+                gainValue = brightnessValue
+            }
         }
     }
     
@@ -68,7 +75,8 @@ func loadCIImageWithGainMap(imageData: Data) -> (image: CIImage?, hasGainMap: Bo
                 let sizeCG = CGSize(width: CGFloat(width), height: CGFloat(height))
 
                 if pixFmt == kCVPixelFormatType_OneComponent8 {
-                    let colorSpace: CGColorSpace? = nil
+                    let colorSpace: CGColorSpace? = CGColorSpace(name: CGColorSpace.extendedLinearGray)
+
                     if let gainMapData = gainMapInfo[kCGImageAuxiliaryDataInfoData] as? Data {
                         gainMap = CIImage(bitmapData: gainMapData,
                                             bytesPerRow: bytesPerRow,
@@ -76,6 +84,7 @@ func loadCIImageWithGainMap(imageData: Data) -> (image: CIImage?, hasGainMap: Bo
                                             format: .L8,
                                             colorSpace: colorSpace)
                         gainMap = gainMap?.oriented(orientation)
+                        gainMap = gainMap?.addMul(add: 1.0, mul: gainValue ?? 1.0)
                     }
                 }
             }
@@ -84,8 +93,10 @@ func loadCIImageWithGainMap(imageData: Data) -> (image: CIImage?, hasGainMap: Bo
     
     
     if let gainMap = gainMap {
+        let gainMapUp = aspectFitToDestination(image: gainMap, destination: outputImage.extent.size)
+        
         let mulFilter = CIFilter.multiplyBlendMode()
-        mulFilter.inputImage = gainMap
+        mulFilter.inputImage = gainMapUp
         mulFilter.backgroundImage = outputImage
         if let combinedImage = mulFilter.outputImage {
             outputImage = combinedImage
@@ -99,6 +110,11 @@ func loadCIImageWithGainMap(imageData: Data) -> (image: CIImage?, hasGainMap: Bo
         }
     }
     
+    // like what the fuck
+    // Find a way to use kCGImageDestinationPreserveGainMap??
+    
+    return (outputImage, gainMap != nil)
+}
     
     
     // like what the fuck
@@ -114,6 +130,19 @@ extension CIImage {
         brightFilter.inputImage = self
         return brightFilter.outputImage
     }
+    
+    func addMul(add: CGFloat, mul: CGFloat) -> CIImage? {
+        let brightFilter = CIFilter.colorMatrix()
+        brightFilter.rVector = CIVector(x: mul, y: 0, z: 0, w: 0)
+        brightFilter.gVector = CIVector(x: 0, y: mul, z: 0, w: 0)
+        brightFilter.bVector = CIVector(x: 0, y: 0, z: mul, w: 0)
+        brightFilter.aVector = CIVector(x: 0, y: 0, z: 0, w: 1)
+        brightFilter.biasVector = CIVector(x: add, y: add, z: add, w: 0)
+        brightFilter.inputImage = self
+        
+        return brightFilter.outputImage
+    }
+
 }
 
 func aspectFitToDestination(image: CIImage, destination: CGSize) -> CIImage {
@@ -194,7 +223,7 @@ struct PlatformImageViewCIRenderCG : UIViewRepresentable, ImageDataConstructable
         guard let image = CIImage(data: imageData, options: options) else { return }
         guard let device = MTLCreateSystemDefaultDevice() else { return }
         let ctx = CIContext(mtlDevice: device)
-        let name = CGColorSpace.extendedDisplayP3
+        let name = CGColorSpace.extendedLinearDisplayP3
         let space = CGColorSpace(name: name)
         
         guard let rendered = ctx.createCGImage(image, from: image.extent, format: .RGBAh, colorSpace: space) else { return }
@@ -226,7 +255,7 @@ struct PlatformImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstru
 
         guard let device = MTLCreateSystemDefaultDevice() else { return }
         let ctx = CIContext(mtlDevice: device)
-        let name = CGColorSpace.extendedDisplayP3
+        let name = CGColorSpace.extendedLinearDisplayP3
         let space = CGColorSpace(name: name)
         
         guard let rendered = ctx.createCGImage(image, from: image.extent, format: .RGBAh, colorSpace: space) else { return }
@@ -252,6 +281,7 @@ struct MetalImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstructa
         var image: CIImage?
         
         func setupMetal(_ view: MTKView) {
+            guard let layer = view.layer as? CAMetalLayer else { return }
             
             guard let device = view.preferredDevice ?? MTLCreateSystemDefaultDevice() else { return }
             view.device = device
@@ -261,19 +291,24 @@ struct MetalImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstructa
             
             guard let commandQueue = commandQueue else { return }
             
-            context = CIContext(mtlCommandQueue: commandQueue, options: [CIContextOption.cacheIntermediates: false])
+            let options: [CIContextOption : Any] = [
+                .cacheIntermediates: false,
+                .workingColorSpace: CGColorSpace(name: CGColorSpace.extendedLinearDisplayP3)!,
+            ]
+            context = CIContext(mtlCommandQueue: commandQueue, options: options)
             
-            let layer = view.layer as! CAMetalLayer
             // allow CI to write to fb
             view.framebufferOnly = false
             view.colorPixelFormat = .rgba16Float
             view.clearColor = MTLClearColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
             view.delegate = self
+            
+            
             layer.colorspace = CGColorSpace(name: CGColorSpace.extendedLinearDisplayP3)
             
             // Not doing anything
-            // layer.setValue(true, forKey: "wantsExtendedDynamicRangeContent")
             // layer.wantsExtendedDynamicRangeContent = true
+            // layer.setValue(true, forKey: "wantsExtendedDynamicRangeContent")
         }
         
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -285,7 +320,8 @@ struct MetalImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstructa
                   var image = image,
                   let layer = view.layer as? CAMetalLayer,
                   let drawable = view.currentDrawable,
-                  let colorSpace = layer.colorspace
+                  let colorSpace = layer.colorspace,
+                  let commandBuffer = commandQueue?.makeCommandBuffer()
             else {
                 return
             }
@@ -295,9 +331,11 @@ struct MetalImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstructa
             
 //            image = image.adjustExposure(ev: 2.0)!
             
-            context.render(image, to: texture, commandBuffer: nil, bounds: image.extent, colorSpace: colorSpace)
+            context.render(image, to: texture, commandBuffer: commandBuffer, bounds: image.extent, colorSpace: colorSpace)
             
-            drawable.present()
+            commandBuffer.present(drawable)
+            
+            commandBuffer.commit()
         }
         
     }
