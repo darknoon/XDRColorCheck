@@ -361,3 +361,48 @@ struct MetalImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstructa
     }
 
 }
+import PhotosUI
+
+struct LivePhotoImageView : UIViewRepresentable, ImageDataConstructable {
+    func makeCoordinator() -> Coordinator {
+        return Coordinator()
+    }
+    
+    let imageData: Data
+
+    class Coordinator {
+        var livePhotoView: PHLivePhotoView?
+        var livePhoto: PHLivePhoto?
+        
+        func requestPhoto() {
+            let rsrcs = ["IMG_1201.HEIC", "IMG_1201.mov"]
+            let testURLs = rsrcs.compactMap{Bundle.main.url(forResource: $0, withExtension: nil) }
+            PHLivePhoto.request(withResourceFileURLs: testURLs, placeholderImage: nil, targetSize: CGSize(width: 300, height: 300), contentMode: .aspectFit) { (photo, info) in
+                let isDegraded = (info[PHLivePhotoInfoIsDegradedKey] as? Bool) ?? false
+                print("photo loaded. degraded: \(isDegraded)")
+                self.livePhoto = photo
+                self.livePhotoView?.livePhoto = photo
+            }
+        }
+    }
+    
+    func makeUIView(context: Context) -> UIView {
+        let iv = PHLivePhotoView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
+        let v = UIView(frame: iv.frame)
+        v.backgroundColor = bgColor
+        v.addSubview(iv)
+        context.coordinator.livePhotoView = iv
+        context.coordinator.requestPhoto()
+        
+        return v
+    }
+    
+    func updateUIView(_ view: UIView, context: Context) {
+        let iv = context.coordinator.livePhotoView!
+
+//        guard let coder = try? NSKeyedUnarchiver(forReadingFrom: imageData) else { return }
+//        let livePhoto = PHLivePhoto(coder: coder)
+        iv.livePhoto = context.coordinator.livePhoto
+    }
+
+}

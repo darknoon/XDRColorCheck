@@ -40,7 +40,8 @@ let attempts = [
     eraseInit(PlatformImageViewCIRenderCG.init),
     eraseInit(PlatformImageViewCIRenderCGSource.init),
     eraseInit(MetalImageViewCIRenderCGSource.init),
-]
+    eraseInit(LivePhotoImageView.init),
+].reversed()
 
 struct ImageList : View {
     var body: some View {
