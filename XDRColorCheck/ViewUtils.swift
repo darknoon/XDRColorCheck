@@ -7,7 +7,24 @@
 
 import SwiftUI
 
+// MARK: Stupid Constants
+
 let mediaSize = CGSize(width: 150, height: 150)
+
+
+// MARK: Erase a constructor for a SwiftUI View
+let regex = try! NSRegularExpression(pattern: "Mirror for \\(.*\\) ->", options: [])
+
+func cleanupDescription(_ blah: String) -> String {
+    return regex.stringByReplacingMatches(in: blah, options: [], range: NSRange(location: 0, length: blah.count), withTemplate: "")
+}
+
+func eraseInit<T, Input>(_ initFunc: @escaping (Input) -> T) -> (String, (Input) -> AnyView) where T:View {
+    return (cleanupDescription(String(describing: Mirror(reflecting: initFunc))), {data in AnyView(initFunc(data)) } )
+}
+
+
+// MARK: Badge View
 
 struct BadgeView : View {
     

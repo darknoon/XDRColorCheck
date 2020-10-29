@@ -20,22 +20,6 @@ protocol ImageDataConstructable {
     init(imageData: Data)
 }
 
-func erase<T: ImageDataConstructable>(_ viewType: T) -> (String, (Data) -> AnyView) where T:View {
-    return (String(describing: viewType), {data in AnyView(T.init(imageData: data)) } )
-}
-
-let regex = try! NSRegularExpression(pattern: "Mirror for \\(.*\\) ->", options: [])
-
-func cleanupDescription(_ blah: String) -> String {
-    return regex.stringByReplacingMatches(in: blah, options: [], range: NSRange(location: 0, length: blah.count), withTemplate: "")
-//    return blah.replacingOccurrences(of: "Mirror for (Data) ->", with: "")
-}
-
-func eraseInit<T, Input>(_ initFunc: @escaping (Input) -> T) -> (String, (Input) -> AnyView) where T:View {
-    return (cleanupDescription(String(describing: Mirror(reflecting: initFunc))), {data in AnyView(initFunc(data)) } )
-}
-
-
 // Oh just a buncha parallel implementations
 let attempts = [
     eraseInit(PlatformImageView.init),
