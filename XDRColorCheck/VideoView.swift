@@ -18,6 +18,7 @@ class PlayerView : UIView {
     let player: AVPlayer
     override init(frame: CGRect) {
         player = AVPlayer(playerItem: nil)
+        player.isMuted = true
         super.init(frame: frame)
         if let playerLayer = self.layer as? AVPlayerLayer {
             playerLayer.player = player
@@ -77,16 +78,13 @@ struct FilteredAVPlayerLayerVideoView : UIViewRepresentable, VideoURLConstructab
 
         let item = AVPlayerItem(url: videoURL)
         
-        // This is the exact code from Edit and Play Back video in HDR
-        // https://developer.apple.com/videos/play/wwdc2020/10009/
+        // This code is from "Edit and Play Back video in HDR" https://developer.apple.com/videos/play/wwdc2020/10009/
         let vc = AVMutableVideoComposition(asset: item.asset, applyingCIFiltersWithHandler: { (request: AVAsynchronousCIImageFilteringRequest) in
-            // Example from WWDC session doesn't work :(
             let f = CIFilter.gaussianBlur()
             f.inputImage = request.sourceImage
             f.radius = 3.0
             
             if let outputImage = f.outputImage {
-                // Also doesn't work when I set context = nil
                 request.finish(with: outputImage, context: nil)
             } else {
                 request.finish(with: VideoError.filterError)
@@ -130,6 +128,7 @@ struct MetalAVPlayerItemVideoOutputVideoView : UIViewRepresentable, VideoURLCons
                 .workingFormat: CIFormat.RGBAh,
                 .workingColorSpace: workingColorSpace
             ])
+            player.isMuted = true
         }
         
         var playerItem: AVPlayerItem? {
@@ -141,7 +140,7 @@ struct MetalAVPlayerItemVideoOutputVideoView : UIViewRepresentable, VideoURLCons
                 if let playerItem = playerItem {
                     
                     let output = AVPlayerItemVideoOutput(pixelBufferAttributes: [
-                        (kCVPixelBufferPixelFormatTypeKey as String): kCVPixelFormatType_420YpCbCr10BiPlanarFullRange,
+                        String(kCVPixelBufferPixelFormatTypeKey): kCVPixelFormatType_420YpCbCr10BiPlanarFullRange,
                     ])
                     playerItem.add(output)
                     videoDataOutput = output
@@ -186,8 +185,14 @@ struct MetalAVPlayerItemVideoOutputVideoView : UIViewRepresentable, VideoURLCons
             }
 
             let im = CIImage(cvPixelBuffer: currentFrame, options: options)
-            
-            context.render(im, to: drawable.texture, commandBuffer: nil, bounds: im.extent, colorSpace: outputColorSpace)
+
+            // Filter image
+            let f = CIFilter.gaussianBlur()
+            f.inputImage = im
+            f.radius = 3.0
+            let outputImage = f.outputImage!
+
+            context.render(outputImage, to: drawable.texture, commandBuffer: nil, bounds: im.extent, colorSpace: outputColorSpace)
             
             drawable.present()
         }
