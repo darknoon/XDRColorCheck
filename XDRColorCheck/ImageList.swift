@@ -24,11 +24,14 @@ func erase<T: ImageDataConstructable>(_ viewType: T) -> (String, (Data) -> AnyVi
     return (String(describing: viewType), {data in AnyView(T.init(imageData: data)) } )
 }
 
+let regex = try! NSRegularExpression(pattern: "Mirror for \\(.*\\) ->", options: [])
+
 func cleanupDescription(_ blah: String) -> String {
-    return blah.replacingOccurrences(of: "Mirror for (Data) ->", with: "")
+    return regex.stringByReplacingMatches(in: blah, options: [], range: NSRange(location: 0, length: blah.count), withTemplate: "")
+//    return blah.replacingOccurrences(of: "Mirror for (Data) ->", with: "")
 }
 
-func eraseInit<T>(_ initFunc: @escaping (Data) -> T) -> (String, (Data) -> AnyView) where T:View {
+func eraseInit<T, Input>(_ initFunc: @escaping (Input) -> T) -> (String, (Input) -> AnyView) where T:View {
     return (cleanupDescription(String(describing: Mirror(reflecting: initFunc))), {data in AnyView(initFunc(data)) } )
 }
 
@@ -53,10 +56,15 @@ struct ImageList : View {
                 if  let resource = Bundle.main.url(forResource: fileName, withExtension: nil),
                     let data = try? Data(contentsOf: resource) {
                     VStack {
+                        HStack {
+                            Text(fileName)
+                                .font(.headline)
+                            BadgeView(text: String(describing: hdrType))
+                        }
                         ForEach(attempts, id: \.0) { name, constructor in
                             VStack() {
                                 constructor(data)
-                                    .frame(width: 300, height: 300)
+                                    .frame(width: mediaSize.width, height: mediaSize.height)
                                 Text(name)
                             }.padding()
                         }

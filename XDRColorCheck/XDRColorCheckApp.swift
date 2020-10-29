@@ -22,6 +22,11 @@ struct XDRColorCheckApp: App {
                         Image(systemName: "photo.on.rectangle")
                         Text("Images")
                     }
+                VideoList()
+                    .tabItem {
+                        Image(systemName: "video")
+                        Text("Video")
+                    }
             }
         }
     }

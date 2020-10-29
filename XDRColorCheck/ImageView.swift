@@ -115,13 +115,6 @@ func loadCIImageWithGainMap(imageData: Data) -> (image: CIImage?, hasGainMap: Bo
     
     return (outputImage, gainMap != nil)
 }
-    
-    
-    // like what the fuck
-    // Find a way to use kCGImageDestinationPreserveGainMap??
-    
-    return (outputImage, gainMap != nil)
-}
 
 extension CIImage {
     func adjustExposure(ev: Float) -> CIImage? {
@@ -156,7 +149,7 @@ struct PlatformImageView : UIViewRepresentable, ImageDataConstructable {
     let imageData: Data
     
     func makeUIView(context: Context) -> UIView {
-        let iv = UIImageView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
+        let iv = UIImageView(frame: CGRect(origin: .zero, size: mediaSize))
         let v = UIView(frame: iv.frame)
         v.backgroundColor = bgColor
         v.addSubview(iv)
@@ -166,7 +159,7 @@ struct PlatformImageView : UIViewRepresentable, ImageDataConstructable {
     func updateUIView(_ view: UIView, context: Context) {
         let iv = view.subviews[0] as! UIImageView
         iv.contentMode = .scaleAspectFit
-        iv.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
+        iv.frame = CGRect(origin: .zero, size: mediaSize)
         iv.image = UIImage(data: imageData)
     }
 }
@@ -176,7 +169,7 @@ struct PlatformImageViewCI : UIViewRepresentable, ImageDataConstructable {
     let imageData: Data
     
     func makeUIView(context: Context) -> UIView {
-        let iv = UIImageView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
+        let iv = UIImageView(frame: CGRect(origin: .zero, size: mediaSize))
         let v = UIView(frame: iv.frame)
         v.backgroundColor = bgColor
         v.addSubview(iv)
@@ -205,7 +198,7 @@ struct PlatformImageViewCIRenderCG : UIViewRepresentable, ImageDataConstructable
     let imageData: Data
     
     func makeUIView(context: Context) -> UIView {
-        let iv = UIImageView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
+        let iv = UIImageView(frame: CGRect(origin: .zero, size: mediaSize))
         let v = UIView(frame: iv.frame)
         v.backgroundColor = bgColor
         v.addSubview(iv)
@@ -241,7 +234,7 @@ struct PlatformImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstru
     let imageData: Data
     
     func makeUIView(context: Context) -> UIView {
-        let iv = UIImageView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
+        let iv = UIImageView(frame: CGRect(origin: .zero, size: mediaSize))
         let v = UIView(frame: iv.frame)
         v.backgroundColor = bgColor
         v.addSubview(iv)
@@ -345,7 +338,7 @@ struct MetalImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstructa
     }
     
     func makeUIView(context: Context) -> UIView {
-        let iv = MTKView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
+        let iv = MTKView(frame: CGRect(origin: .zero, size: mediaSize))
         let v = UIView(frame: iv.frame)
         v.backgroundColor = bgColor
         v.addSubview(iv)
@@ -377,7 +370,7 @@ struct LivePhotoImageView : UIViewRepresentable, ImageDataConstructable {
         func requestPhoto() {
             let rsrcs = ["IMG_1201.HEIC", "IMG_1201.mov"]
             let testURLs = rsrcs.compactMap{Bundle.main.url(forResource: $0, withExtension: nil) }
-            PHLivePhoto.request(withResourceFileURLs: testURLs, placeholderImage: nil, targetSize: CGSize(width: 300, height: 300), contentMode: .aspectFit) { (photo, info) in
+            PHLivePhoto.request(withResourceFileURLs: testURLs, placeholderImage: nil, targetSize: mediaSize, contentMode: .aspectFit) { (photo, info) in
                 let isDegraded = (info[PHLivePhotoInfoIsDegradedKey] as? Bool) ?? false
                 print("photo loaded. degraded: \(isDegraded)")
                 self.livePhoto = photo
@@ -387,7 +380,8 @@ struct LivePhotoImageView : UIViewRepresentable, ImageDataConstructable {
     }
     
     func makeUIView(context: Context) -> UIView {
-        let iv = PHLivePhotoView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
+        let iv = PHLivePhotoView(frame: CGRect(origin: .zero, size: mediaSize)
+        )
         let v = UIView(frame: iv.frame)
         v.backgroundColor = bgColor
         v.addSubview(iv)
