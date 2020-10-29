@@ -18,7 +18,8 @@ let testVideos: [(String, VideoHDRType, String)] = [
 let videoAttempts = [
     eraseInit(AVPlayerLayerVideoView.init),
     eraseInit(FilteredAVPlayerLayerVideoView.init),
-    eraseInit(MetalAVPlayerItemVideoOutputVideoView.init)
+    eraseInit(MetalAVPlayerItemVideoOutputVideoView.init),
+    eraseInit(IOSurfaceAVPlayerItemVideoOutputVideoView.init),
 ].reversed()
 
 let firstVideoURL = Bundle.main.url(forResource: testVideos[0].2, withExtension: nil)!

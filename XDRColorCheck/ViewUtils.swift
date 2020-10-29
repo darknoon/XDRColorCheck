@@ -23,7 +23,6 @@ func eraseInit<T, Input>(_ initFunc: @escaping (Input) -> T) -> (String, (Input)
     return (cleanupDescription(String(describing: Mirror(reflecting: initFunc))), {data in AnyView(initFunc(data)) } )
 }
 
-
 // MARK: Badge View
 
 struct BadgeView : View {

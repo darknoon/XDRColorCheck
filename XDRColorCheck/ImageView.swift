@@ -286,7 +286,7 @@ struct MetalImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstructa
             
             let options: [CIContextOption : Any] = [
                 .cacheIntermediates: false,
-                .workingColorSpace: CGColorSpace(name: CGColorSpace.extendedLinearDisplayP3)!,
+                .workingColorSpace: CGColorSpace(name: CGColorSpace.extendedLinearITUR_2020)!,
             ]
             context = CIContext(mtlCommandQueue: commandQueue, options: options)
             
@@ -296,18 +296,11 @@ struct MetalImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstructa
             view.clearColor = MTLClearColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
             view.delegate = self
             
-            
 //            layer.colorspace = CGColorSpace(name: CGColorSpace.extendedLinearDisplayP3)
             layer.colorspace = CGColorSpace(name: kCGColorSpaceITUR_2100_HLG)
-
-            // Not doing anything
-            // layer.wantsExtendedDynamicRangeContent = true
-            // layer.setValue(true, forKey: "wantsExtendedDynamicRangeContent")
         }
         
-        func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-            
-        }
+        func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}
         
         func draw(in view: MTKView) {
             guard let context = context,
