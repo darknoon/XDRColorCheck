@@ -165,6 +165,7 @@ struct PlatformImageView : UIViewRepresentable, ImageDataConstructable {
 }
 
 
+// 1. Use a regular UIImageView to display the image
 struct PlatformImageViewCI : UIViewRepresentable, ImageDataConstructable {
     let imageData: Data
     
@@ -193,7 +194,7 @@ struct PlatformImageViewCI : UIViewRepresentable, ImageDataConstructable {
 
 }
 
-
+// 2. Use a regular UIImageView to display the image, but load and render it to CGImage with CoreImage
 struct PlatformImageViewCIRenderCG : UIViewRepresentable, ImageDataConstructable {
     let imageData: Data
     
@@ -230,6 +231,7 @@ struct PlatformImageViewCIRenderCG : UIViewRepresentable, ImageDataConstructable
 }
 
 
+// 3. Use a regular UIImageView to display the image, but load it with CGImageSource and render it to CGImage with CoreImage
 struct PlatformImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstructable {
     let imageData: Data
     
@@ -248,13 +250,10 @@ struct PlatformImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstru
 
         guard let device = MTLCreateSystemDefaultDevice() else { return }
         let ctx = CIContext(mtlDevice: device)
-        let name = CGColorSpace.extendedLinearDisplayP3
-        let space = CGColorSpace(name: name)
+        let space = CGColorSpace(name: CGColorSpace.extendedLinearDisplayP3)!
         
         guard let rendered = ctx.createCGImage(image, from: image.extent, format: .RGBAh, colorSpace: space) else { return }
-//
         let wrap = UIImage(cgImage: rendered)
-//        let wrap = UIImage(ciImage: image)
         
         iv.contentMode = .scaleAspectFit
         iv.image = wrap
@@ -263,6 +262,9 @@ struct PlatformImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstru
 }
 
 
+// 4. Use an MTKView with Float backing in Hybrid Log-Gamma color space
+// load the gain map from the CGImageSource
+// renderer with CoreImage
 struct MetalImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstructable {
     let imageData: Data
     
@@ -350,6 +352,7 @@ struct MetalImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstructa
 }
 import PhotosUI
 
+// 5. Use a Live Photo view to render the image
 struct LivePhotoImageView : UIViewRepresentable, ImageDataConstructable {
     func makeCoordinator() -> Coordinator {
         return Coordinator()
@@ -387,10 +390,8 @@ struct LivePhotoImageView : UIViewRepresentable, ImageDataConstructable {
     
     func updateUIView(_ view: UIView, context: Context) {
         let iv = context.coordinator.livePhotoView!
-
-//        guard let coder = try? NSKeyedUnarchiver(forReadingFrom: imageData) else { return }
-//        let livePhoto = PHLivePhoto(coder: coder)
         iv.livePhoto = context.coordinator.livePhoto
     }
 
 }
+
