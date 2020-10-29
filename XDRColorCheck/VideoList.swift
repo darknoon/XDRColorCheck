@@ -18,9 +18,10 @@ let testVideos: [(String, VideoHDRType, String)] = [
 let videoAttempts = [
     eraseInit(AVPlayerLayerVideoView.init),
     eraseInit(FilteredAVPlayerLayerVideoView.init),
+    eraseInit(MetalAVPlayerItemVideoOutputVideoView.init)
 ].reversed()
 
-let videoURL = Bundle.main.url(forResource: testVideos[0].2, withExtension: nil)!
+let firstVideoURL = Bundle.main.url(forResource: testVideos[0].2, withExtension: nil)!
 
 
 struct VideoList : View {
@@ -29,6 +30,7 @@ struct VideoList : View {
         List {
             ForEach(testVideos, id: \.2) {(name, hdrType, fileName) in
                 VStack(alignment: .leading) {
+                    let videoURL = Bundle.main.url(forResource: fileName, withExtension: nil)!
                     HStack {
                         Text(videoURL.lastPathComponent)
                             .font(.headline)

@@ -211,7 +211,7 @@ struct PlatformImageViewCIRenderCG : UIViewRepresentable, ImageDataConstructable
         var options: [CIImageOption : Any] = [:]
         options[.applyOrientationProperty] = true
         if #available(iOS 14.1, *) {
-            options = [CIImageOption.toneMapHDRtoSDR: false]
+            options[.toneMapHDRtoSDR] = false
         }
         guard let image = CIImage(data: imageData, options: options) else { return }
         guard let device = MTLCreateSystemDefaultDevice() else { return }
@@ -297,8 +297,9 @@ struct MetalImageViewCIRenderCGSource : UIViewRepresentable, ImageDataConstructa
             view.delegate = self
             
             
-            layer.colorspace = CGColorSpace(name: CGColorSpace.extendedLinearDisplayP3)
-            
+//            layer.colorspace = CGColorSpace(name: CGColorSpace.extendedLinearDisplayP3)
+            layer.colorspace = CGColorSpace(name: kCGColorSpaceITUR_2100_HLG)
+
             // Not doing anything
             // layer.wantsExtendedDynamicRangeContent = true
             // layer.setValue(true, forKey: "wantsExtendedDynamicRangeContent")
