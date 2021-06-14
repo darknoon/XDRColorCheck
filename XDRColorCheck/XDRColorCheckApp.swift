@@ -27,6 +27,12 @@ struct XDRColorCheckApp: App {
                         Image(systemName: "video")
                         Text("Video")
                     }
+                
+                SceneList()
+                    .tabItem {
+                        Image(systemName: "move.3d")
+                        Text("3D")
+                    }
             }
         }
     }
