@@ -12,7 +12,8 @@ let testScenes: [(displayName: String, resourceName: String)] = [
 ]
 
 let sceneAttempts = [
-    eraseInit(SceneKitView.init),
+//    eraseInit(SceneKitView.init),
+    eraseInit(SceneKitInPlayerLayerView.init)
 ].reversed()
 
 protocol SceneURLConstructable {

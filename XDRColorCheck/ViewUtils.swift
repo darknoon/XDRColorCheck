@@ -9,7 +9,7 @@ import SwiftUI
 
 // MARK: Stupid Constants
 
-let mediaSize = CGSize(width: 150, height: 150)
+let mediaSize = CGSize(width: 300, height: 150)
 
 
 // MARK: Erase a constructor for a SwiftUI View
@@ -22,6 +22,11 @@ func cleanupDescription(_ blah: String) -> String {
 func eraseInit<T, Input>(_ initFunc: @escaping (Input) -> T) -> (String, (Input) -> AnyView) where T:View {
     return (cleanupDescription(String(describing: Mirror(reflecting: initFunc))), {data in AnyView(initFunc(data)) } )
 }
+
+func *(left: CGRect, scale: CGFloat) -> CGRect {
+        .init(x: left.origin.x * scale, y: left.origin.y * scale, width: left.size.width * scale, height: left.self.height * scale )
+}
+
 
 // MARK: Badge View
 
